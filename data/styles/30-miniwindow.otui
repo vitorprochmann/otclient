@@ -206,7 +206,7 @@ PhantomMiniWindow < UIMiniWindow
   draggable: true
   phantom: false
   focusable: false
-  &moveOnlyToMain: true
+  &moveOnlyToMain: false
 
   UIWidget
     image-source: /images/ui/background
