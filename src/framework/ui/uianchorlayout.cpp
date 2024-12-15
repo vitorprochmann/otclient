@@ -185,8 +185,7 @@ bool UIAnchorLayout::updateWidget(const UIWidgetPtr& widget, const UIAnchorGroup
                     extraMarginTop += hookedWidget->getMarginBottom();
                     extraMarginBottom += hookedWidget->getMarginTop();
                     break;
-                }
-                if (anchor->getAnchoredEdge() == Fw::AnchorLeft && anchor->getHookedEdge() == Fw::AnchorRight) {
+                } else if (anchor->getAnchoredEdge() == Fw::AnchorLeft && anchor->getHookedEdge() == Fw::AnchorRight) {
                     extraMarginTop -= hookedWidget->getMarginTop();
                     extraMarginBottom -= hookedWidget->getMarginBottom();
                     break;
@@ -268,7 +267,7 @@ bool UIAnchorLayout::updateWidget(const UIWidgetPtr& widget, const UIAnchorGroup
 bool UIAnchorLayout::internalUpdate()
 {
     // reset all anchors groups update state
-    for (const auto& it : m_anchorsGroups)
+    for (auto& it : m_anchorsGroups)
         it.second->setUpdated(false);
 
     bool changed = false;

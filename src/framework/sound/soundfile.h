@@ -22,15 +22,15 @@
 
 #pragma once
 
-#include "declarations.h"
 #include <framework/core/filestream.h>
+#include "declarations.h"
 
 class SoundFile : public std::enable_shared_from_this<SoundFile>
 {
 public:
-    virtual ~SoundFile() = default; // fix clang warning
+    virtual ~SoundFile() {} // fix clang warning
 
-    SoundFile(FileStreamPtr fileStream) : m_file(std::move(fileStream)) {}
+    SoundFile(const FileStreamPtr& fileStream) : m_file(fileStream) {}
     static SoundFilePtr loadSoundFile(const std::string& filename);
 
     virtual int read(void* /*buffer*/, int /*bufferSize*/) { return -1; }

@@ -25,13 +25,11 @@
 
 #include <framework/core/application.h>
 #include <framework/core/eventdispatcher.h>
-#include <framework/core/modulemanager.h>
 #include <framework/core/resourcemanager.h>
 #include <framework/graphics/drawpoolmanager.h>
 #include <framework/otml/otml.h>
 #include <framework/platform/platformwindow.h>
-
-#include <algorithm>
+#include <framework/core/modulemanager.h>
 
 UIManager g_ui;
 
@@ -116,7 +114,7 @@ void UIManager::inputEvent(const InputEvent& event)
 
                 // mouse release is always fired first on the pressed widget
                 if (m_pressedWidget) {
-                    const auto it = std::ranges::find(widgetList, m_pressedWidget);
+                    const auto it = std::find(widgetList.begin(), widgetList.end(), m_pressedWidget);
                     if (it != widgetList.end())
                         widgetList.erase(it);
                     widgetList.emplace_front(m_pressedWidget);
@@ -175,7 +173,7 @@ void UIManager::inputEvent(const InputEvent& event)
     }
 }
 
-void UIManager::updatePressedWidget(const UIWidgetPtr& newPressedWidget, const Point& clickedPos, const bool fireClicks)
+void UIManager::updatePressedWidget(const UIWidgetPtr& newPressedWidget, const Point& clickedPos, bool fireClicks)
 {
     const UIWidgetPtr oldPressedWidget = m_pressedWidget;
     m_pressedWidget = newPressedWidget;
@@ -225,7 +223,7 @@ bool UIManager::updateDraggingWidget(const UIWidgetPtr& draggingWidget, const Po
     return accepted;
 }
 
-void UIManager::updateHoveredWidget(const bool now)
+void UIManager::updateHoveredWidget(bool now)
 {
     if (m_hoverUpdateScheduled && !now)
         return;
@@ -324,7 +322,7 @@ void UIManager::clearStyles()
     m_styles.clear();
 }
 
-bool UIManager::importStyle(const std::string& fl, const bool checkDeviceStyles)
+bool UIManager::importStyle(const std::string& fl, bool checkDeviceStyles)
 {
     const std::string file{ g_resources.guessFilePath(fl, "otui") };
     try {
@@ -339,13 +337,13 @@ bool UIManager::importStyle(const std::string& fl, const bool checkDeviceStyles)
 
     if (checkDeviceStyles) {
         // check for device styles
-        const auto fileName = fl.substr(0, fl.find("."));
+        auto fileName = fl.substr(0, fl.find("."));
 
-        const auto deviceName = g_platform.getDeviceShortName();
+        auto deviceName = g_platform.getDeviceShortName();
         if (!deviceName.empty())
             importStyle(deviceName + "." + fileName, false);
 
-        const auto osName = g_platform.getOsShortName();
+        auto osName = g_platform.getOsShortName();
         if (!osName.empty())
             importStyle(osName + "." + fileName, false);
     }
@@ -443,6 +441,7 @@ std::string UIManager::getStyleName(const std::string_view styleName)
     return "";
 }
 
+
 std::string UIManager::getStyleClass(const std::string_view styleName)
 {
     if (const auto& style = getStyle(styleName)) {
@@ -467,10 +466,10 @@ OTMLNodePtr UIManager::findMainWidgetNode(const OTMLDocumentPtr& doc)
     return mainNode;
 }
 
-OTMLNodePtr UIManager::loadDeviceUI(const std::string& file, const Platform::OperatingSystem os)
+OTMLNodePtr UIManager::loadDeviceUI(const std::string& file, Platform::OperatingSystem os)
 {
-    const auto rawName = file.substr(0, file.find("."));
-    const auto osName = g_platform.getOsShortName(os);
+    auto rawName = file.substr(0, file.find("."));
+    auto osName = g_platform.getOsShortName(os);
 
     const auto& doc = OTMLDocument::parse(g_resources.guessFilePath(rawName + "." + osName, "otui"));
     if (doc) {
@@ -481,10 +480,10 @@ OTMLNodePtr UIManager::loadDeviceUI(const std::string& file, const Platform::Ope
     return nullptr;
 }
 
-OTMLNodePtr UIManager::loadDeviceUI(const std::string& file, const Platform::DeviceType deviceType)
+OTMLNodePtr UIManager::loadDeviceUI(const std::string& file, Platform::DeviceType deviceType)
 {
-    const auto rawName = file.substr(0, file.find("."));
-    const auto deviceName = g_platform.getDeviceShortName(deviceType);
+    auto rawName = file.substr(0, file.find("."));
+    auto deviceName = g_platform.getDeviceShortName(deviceType);
 
     const auto& doc = OTMLDocument::parse(g_resources.guessFilePath(rawName + "." + deviceName, "otui"));
     if (doc) {
@@ -515,7 +514,7 @@ UIWidgetPtr UIManager::loadUI(const std::string& file, const UIWidgetPtr& parent
         }
 
         // load device styles and widget
-        const auto device = g_platform.getDevice();
+        auto device = g_platform.getDevice();
         try {
             const auto& deviceWidgetNode = loadDeviceUI(file, device.type);
             if (deviceWidgetNode)
@@ -524,7 +523,7 @@ UIWidgetPtr UIManager::loadUI(const std::string& file, const UIWidgetPtr& parent
             g_logger.fine(stdext::format("no device ui found for '%s', reason: '%s'", file, e.what()));
         }
         try {
-            const auto osWidgetNode = loadDeviceUI(file, device.os);
+            auto osWidgetNode = loadDeviceUI(file, device.os);
             if (osWidgetNode)
                 widgetNode = osWidgetNode;
         } catch (stdext::exception& e) {
@@ -550,7 +549,7 @@ UIWidgetPtr UIManager::loadUIFromString(const std::string& data, const UIWidgetP
         sstream.clear(std::ios::goodbit);
         sstream.write(&data[0], data.length());
         sstream.seekg(0, std::ios::beg);
-        const OTMLDocumentPtr doc = OTMLDocument::parse(sstream, "(string)");
+        OTMLDocumentPtr doc = OTMLDocument::parse(sstream, "(string)");
         UIWidgetPtr widget;
         for (const OTMLNodePtr& node : doc->children()) {
             std::string tag = node->tag();

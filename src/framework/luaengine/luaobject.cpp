@@ -23,15 +23,14 @@
 #include "luaobject.h"
 #include "luainterface.h"
 
-#include <framework/core/application.h>
 #include <typeinfo>
+#include <framework/core/application.h>
 
 int16_t g_luaThreadId = -1;
 
 LuaObject::LuaObject() :
     m_fieldsTableRef(-1)
-{
-}
+{}
 
 LuaObject::~LuaObject()
 {

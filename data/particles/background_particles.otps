@@ -9,7 +9,7 @@ Particle
   max-velocity-angle: 55
   colors: #FFFFFF00 #fa8c0f #05050500
   colors-stops: 0 0.80 1
-  size: 20 20
+  size: 5 5
   texture: /particles/particle2
   composition-mode: normal
 

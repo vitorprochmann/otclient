@@ -21,15 +21,15 @@
  */
 
 #include "spritemanager.h"
-#include "game.h"
-#include "gameconfig.h"
-#include "spriteappearances.h"
+#include <framework/core/filestream.h>
 #include <framework/core/asyncdispatcher.h>
 #include <framework/core/eventdispatcher.h>
-#include <framework/core/filestream.h>
-#include <framework/core/graphicalapplication.h>
 #include <framework/core/resourcemanager.h>
 #include <framework/graphics/image.h>
+#include "game.h"
+#include "spriteappearances.h"
+#include <framework/core/graphicalapplication.h>
+#include "gameconfig.h"
 
 SpriteManager g_sprites;
 
@@ -61,13 +61,13 @@ bool SpriteManager::loadSpr(std::string file)
     m_loaded = false;
     m_spritesHd = false;
 
-    const auto cwmFile = g_resources.guessFilePath(file, "cwm");
+    auto cwmFile = g_resources.guessFilePath(file, "cwm");
     if (g_resources.fileExists(cwmFile)) {
         m_spritesHd = true;
         return loadCwmSpr(cwmFile);
     }
 
-    const auto sprFile = g_resources.guessFilePath(file, "spr");
+    auto sprFile = g_resources.guessFilePath(file, "spr");
     if (g_resources.fileExists(sprFile)) {
         return loadRegularSpr(sprFile);
     }
@@ -109,7 +109,7 @@ bool SpriteManager::loadCwmSpr(std::string file)
 
         const auto& spritesFile = getSpriteFile();
 
-        const uint8_t version = spritesFile->getU8();
+        uint8_t version = spritesFile->getU8();
         if (version != 0x01) {
             g_logger.error(stdext::format("Invalid CWM file version - %s", file));
             return false;
@@ -117,7 +117,7 @@ bool SpriteManager::loadCwmSpr(std::string file)
 
         m_spritesCount = spritesFile->getU16();
 
-        const uint32_t entries = spritesFile->getU32();
+        uint32_t entries = spritesFile->getU32();
         m_cwmSpritesMetadata.reserve(entries);
         for (uint32_t i = 0; i < entries; ++i) {
             FileMetadata spriteMetadata{ spritesFile };
@@ -138,6 +138,8 @@ bool SpriteManager::loadCwmSpr(std::string file)
         g_logger.error(stdext::format("Failed to load sprites from '%s': %s", file, e.what()));
         return false;
     }
+
+    return false;
 }
 
 #ifdef FRAMEWORK_EDITOR
@@ -206,7 +208,7 @@ void SpriteManager::unload()
     m_spritesFiles.clear();
 }
 
-ImagePtr SpriteManager::getSpriteImage(const int id)
+ImagePtr SpriteManager::getSpriteImage(int id)
 {
     if (g_game.getClientVersion() >= 1281 && !g_game.getFeature(Otc::GameLoadSprInsteadProtobuf)) {
         return g_spriteAppearances.getSpriteImage(id);
@@ -221,9 +223,9 @@ ImagePtr SpriteManager::getSpriteImage(const int id)
     return nullptr;
 }
 
-ImagePtr SpriteManager::getSpriteImageHd(const int id, const FileStreamPtr& file)
+ImagePtr SpriteManager::getSpriteImageHd(int id, const FileStreamPtr& file)
 {
-    const auto it = m_cwmSpritesMetadata.find(id);
+    auto it = m_cwmSpritesMetadata.find(id);
     if (it == m_cwmSpritesMetadata.end())
         return nullptr;
 
@@ -237,7 +239,7 @@ ImagePtr SpriteManager::getSpriteImageHd(const int id, const FileStreamPtr& file
     return Image::loadPNG(buffer.data(), buffer.size());
 }
 
-ImagePtr SpriteManager::getSpriteImage(const int id, const FileStreamPtr& file)
+ImagePtr SpriteManager::getSpriteImage(int id, const FileStreamPtr& file)
 {
     if (id == 0 || !file)
         return nullptr;

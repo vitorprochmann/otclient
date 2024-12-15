@@ -23,9 +23,9 @@
 #include "soundmanager.h"
 #include "combinedsoundsource.h"
 #include "soundbuffer.h"
-#include "soundeffect.h"
 #include "soundfile.h"
 #include "streamsoundsource.h"
+#include "soundeffect.h"
 
 #include <cstdint>
 #include <framework/core/asyncdispatcher.h>
@@ -150,7 +150,7 @@ void SoundManager::poll()
     }
 }
 
-void SoundManager::setAudioEnabled(const bool enable)
+void SoundManager::setAudioEnabled(bool enable)
 {
     if (m_audioEnabled == enable)
         return;
@@ -184,7 +184,7 @@ void SoundManager::preload(std::string filename)
         m_buffers[filename] = buffer;
 }
 
-SoundSourcePtr SoundManager::play(const std::string& fn, const float fadetime, float gain, float pitch)
+SoundSourcePtr SoundManager::play(const std::string& fn, float fadetime, float gain, float pitch)
 {
     if (!m_audioEnabled)
         return nullptr;
@@ -328,7 +328,7 @@ void SoundManager::setPosition(const Point& pos)
 
 SoundEffectPtr SoundManager::createSoundEffect()
 {
-    auto soundEffect = std::make_shared<SoundEffect>(m_device);
+    SoundEffectPtr soundEffect = std::make_shared<SoundEffect>(m_device);
     return soundEffect;
 }
 
@@ -336,6 +336,7 @@ bool SoundManager::isEaxEnabled()
 {
     if (alGetEnumValue("AL_EFFECT_EAXREVERB") != 0) {
         return true;
+    } else {
+        return false;
     }
-    return false;
 }

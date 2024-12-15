@@ -25,8 +25,8 @@
  // this file is and must be included only from luainterface.h
 #include "luaexception.h"
 
-#include <framework/stdext/traits.h>
 #include <tuple>
+#include <framework/stdext/traits.h>
 
 /// This namespace contains some dirty metaprogamming that uses a lot of C++0x features
 /// The purpose here is to create templates that can bind any function from C++
@@ -58,9 +58,8 @@ namespace luabinder
 
     /// C++ function caller that can push results to lua
     template<typename Ret, typename F, typename... Args>
-    int
+    std::enable_if_t<!std::is_void_v<Ret>, int>
         call_fun_and_push_result(const F& f, LuaInterface* lua, const Args&... args)
-        requires (!std::is_void_v<Ret>)
     {
         Ret ret = f(args...);
         int numRets = lua->polymorphicPush(ret);
@@ -69,9 +68,8 @@ namespace luabinder
 
     /// C++ void function caller
     template<typename Ret, typename F, typename... Args>
-    int
+    std::enable_if_t<std::is_void_v<Ret>, int>
         call_fun_and_push_result(const F& f, LuaInterface* /*lua*/, const Args&... args)
-        requires (std::is_void_v<Ret>)
     {
         f(args...);
         return 0;
@@ -149,8 +147,7 @@ namespace luabinder
     };
 
     template<typename Lambda>
-    LuaCppFunction bind_fun(const Lambda& f)
-        requires (std::is_constructible_v<decltype(&Lambda::operator())>)
+    std::enable_if_t<std::is_constructible_v<decltype(&Lambda::operator())>, LuaCppFunction> bind_fun(const Lambda& f)
     {
         using F = decltype(&Lambda::operator());
         return bind_lambda_fun<F>::call(f);

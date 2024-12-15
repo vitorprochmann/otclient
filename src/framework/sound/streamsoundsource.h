@@ -24,7 +24,7 @@
 
 #include "soundsource.h"
 
-class StreamSoundSource final : public SoundSource
+class StreamSoundSource : public SoundSource
 {
     enum
     {

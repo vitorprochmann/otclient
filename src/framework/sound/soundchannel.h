@@ -25,11 +25,10 @@
 #include "soundsource.h"
 
  // @bindclass
-class SoundChannel final : public LuaObject
+class SoundChannel : public LuaObject
 {
 public:
-    SoundChannel(const int id) : m_id(id)
-    {}
+    SoundChannel(int id) : m_id(id), m_gain(1), m_pitch(1) {}
 
     SoundSourcePtr play(const std::string& filename, float fadetime = 0, float gain = 1.0f, float pitch = 1.0f);
     void stop(float fadetime = 0);
@@ -58,7 +57,7 @@ protected:
 private:
     struct QueueEntry
     {
-        QueueEntry(std::string fn, const float ft, const float g, const float p) : filename(std::move(fn)), fadetime(ft), gain(g), pitch(p) {};
+        QueueEntry(std::string fn, float ft, float g, float p) : filename(fn), fadetime(ft), gain(g), pitch(p) {};
 
         std::string filename;
         float fadetime;
@@ -69,7 +68,7 @@ private:
     SoundSourcePtr m_currentSource;
     bool m_enabled{ true };
     int m_id;
-    float m_gain{ 1 };
-    float m_pitch{ 1 };
+    float m_gain;
+    float m_pitch;
     Point m_pos;
 };

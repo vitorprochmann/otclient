@@ -28,7 +28,7 @@
 #include <framework/otml/declarations.h>
 
  // @bindclass
-class Config final : public LuaObject
+class Config : public LuaObject
 {
 public:
     Config();

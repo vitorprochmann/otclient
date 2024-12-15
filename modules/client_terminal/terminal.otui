@@ -40,7 +40,7 @@ UIWindow
     text-offset: 4 0
     height: 18
     visible: false
-
+    disable: true
   ScrollablePanel
     id: terminalBuffer
     focusable: false

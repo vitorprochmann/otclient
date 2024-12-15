@@ -364,7 +364,7 @@ void LuaInterface::evaluateExpression(const std::string_view expression, const s
         pushNil();
 }
 
-std::string LuaInterface::traceback(const std::string_view errorMessage, const int level)
+std::string LuaInterface::traceback(const std::string_view errorMessage, int level)
 {
     // gets debug.traceback
     getGlobal("debug");
@@ -422,7 +422,7 @@ std::string LuaInterface::getCurrentSourcePath(int level)
     return path;
 }
 
-int LuaInterface::safeCall(const int numArgs, const int numRets)
+int LuaInterface::safeCall(int numArgs, int numRets)
 {
     assert(hasIndex(-numArgs - 1));
 
@@ -461,7 +461,7 @@ int LuaInterface::safeCall(const int numArgs, const int numRets)
     return rets;
 }
 
-int LuaInterface::signalCall(const int numArgs, const int numRets)
+int LuaInterface::signalCall(int numArgs, int numRets)
 {
     int rets = 0;
     const int funcIndex = -numArgs - 1;
@@ -660,7 +660,7 @@ void LuaInterface::registerTable(lua_State* L_STATE, const std::string& tableNam
     lua_setglobal(L_STATE, tableName.c_str());
 }
 
-void LuaInterface::registerMethod(lua_State* L_STATE, const std::string& globalName, const std::string& methodName, const lua_CFunction func)
+void LuaInterface::registerMethod(lua_State* L_STATE, const std::string& globalName, const std::string& methodName, lua_CFunction func)
 {
     // globalName.methodName = func
     lua_getglobal(L_STATE, globalName.c_str());
@@ -814,13 +814,13 @@ void LuaInterface::loadBuffer(const std::string_view buffer, const std::string_v
         throw LuaException(popString(), 0);
 }
 
-int LuaInterface::pcall(const int numArgs, const int numRets, const int errorFuncIndex)
+int LuaInterface::pcall(int numArgs, int numRets, int errorFuncIndex)
 {
     assert(hasIndex(-numArgs - 1));
     return lua_pcall(L, numArgs, numRets, errorFuncIndex);
 }
 
-void LuaInterface::call(const int numArgs, const int numRets)
+void LuaInterface::call(int numArgs, int numRets)
 {
     assert(hasIndex(-numArgs - 1));
     lua_call(L, numArgs, numRets);
@@ -861,13 +861,13 @@ int LuaInterface::weakRef()
     return id;
 }
 
-void LuaInterface::unref(const int ref) const
+void LuaInterface::unref(int ref) const
 {
     if (ref >= 0 && L != nullptr)
         luaL_unref(L, LUA_REGISTRYINDEX, ref);
 }
 
-const char* LuaInterface::typeName(const int index)
+const char* LuaInterface::typeName(int index)
 {
     assert(hasIndex(index));
     const int type = lua_type(L, index);
@@ -894,25 +894,25 @@ std::string LuaInterface::functionSourcePath() const
     return path;
 }
 
-void LuaInterface::insert(const int index)
+void LuaInterface::insert(int index)
 {
     assert(hasIndex(index));
     lua_insert(L, index);
 }
 
-void LuaInterface::remove(const int index)
+void LuaInterface::remove(int index)
 {
     assert(hasIndex(index));
     lua_remove(L, index);
 }
 
-bool LuaInterface::next(const int index)
+bool LuaInterface::next(int index)
 {
     assert(hasIndex(index));
     return lua_next(L, index);
 }
 
-void LuaInterface::getStackFunction(const int level)
+void LuaInterface::getStackFunction(int level)
 {
     lua_Debug ar;
     if (lua_getstack(L, level, &ar) == 1)
@@ -921,12 +921,12 @@ void LuaInterface::getStackFunction(const int level)
         pushNil();
 }
 
-void LuaInterface::getRef(const int ref) const
+void LuaInterface::getRef(int ref) const
 {
     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
 }
 
-void LuaInterface::getWeakRef(const int weakRef)
+void LuaInterface::getWeakRef(int weakRef)
 {
     // pushes weak_table[weakRef]
     getRef(m_weakTableRef);
@@ -934,7 +934,7 @@ void LuaInterface::getWeakRef(const int weakRef)
     remove(-2);
 }
 
-void LuaInterface::setGlobalEnvironment(const int env)
+void LuaInterface::setGlobalEnvironment(int env)
 {
     pushThread();
     getRef(env);
@@ -943,26 +943,26 @@ void LuaInterface::setGlobalEnvironment(const int env)
     pop();
 }
 
-void LuaInterface::setMetatable(const int index)
+void LuaInterface::setMetatable(int index)
 {
     assert(hasIndex(index));
     lua_setmetatable(L, index);
 }
 
-void LuaInterface::getMetatable(const int index)
+void LuaInterface::getMetatable(int index)
 {
     assert(hasIndex(index));
     lua_getmetatable(L, index);
 }
 
-void LuaInterface::getField(const std::string_view key, const int index)
+void LuaInterface::getField(const std::string_view key, int index)
 {
     assert(hasIndex(index));
     assert(isUserdata(index) || isTable(index));
     lua_getfield(L, index, key.data());
 }
 
-void LuaInterface::setField(const std::string_view key, const int index)
+void LuaInterface::setField(const std::string_view key, int index)
 {
     assert(hasIndex(index));
     assert(isUserdata(index) || isTable(index));
@@ -990,19 +990,19 @@ void LuaInterface::setEnv(int index)
 #endif
 }
 
-void LuaInterface::getTable(const int index)
+void LuaInterface::getTable(int index)
 {
     assert(hasIndex(index));
     lua_gettable(L, index);
 }
 
-void LuaInterface::setTable(const int index)
+void LuaInterface::setTable(int index)
 {
     assert(hasIndex(index));
     lua_settable(L, index);
 }
 
-void LuaInterface::clearTable(const int index)
+void LuaInterface::clearTable(int index)
 {
     assert(hasIndex(index) && isTable(index));
 
@@ -1045,25 +1045,25 @@ void LuaInterface::setGlobal(const std::string_view key)
     lua_setglobal(L, key.data());
 }
 
-void LuaInterface::rawGet(const int index)
+void LuaInterface::rawGet(int index)
 {
     assert(hasIndex(index));
     lua_rawget(L, index);
 }
 
-void LuaInterface::rawGeti(const int n, const int index)
+void LuaInterface::rawGeti(int n, int index)
 {
     assert(hasIndex(index));
     lua_rawgeti(L, index, n);
 }
 
-void LuaInterface::rawSet(const int index)
+void LuaInterface::rawSet(int index)
 {
     assert(hasIndex(index));
     lua_rawset(L, index);
 }
 
-void LuaInterface::rawSeti(const int n, const int index)
+void LuaInterface::rawSeti(int n, int index)
 {
     assert(hasIndex(index));
     lua_rawseti(L, index, n);
@@ -1074,17 +1074,17 @@ void LuaInterface::newTable() const
     lua_newtable(L);
 }
 
-void LuaInterface::createTable(const int narr, const int nrec) const
+void LuaInterface::createTable(int narr, int nrec) const
 {
     lua_createtable(L, narr, nrec);
 }
 
-void* LuaInterface::newUserdata(const int size) const
+void* LuaInterface::newUserdata(int size) const
 {
     return lua_newuserdata(L, size);
 }
 
-void LuaInterface::pop(const int n)
+void LuaInterface::pop(int n)
 {
     if (n > 0) {
         assert(hasIndex(-n));
@@ -1151,19 +1151,19 @@ void LuaInterface::pushNil()
     checkStack();
 }
 
-void LuaInterface::pushInteger(const long v)
+void LuaInterface::pushInteger(long v)
 {
     lua_pushinteger(L, v);
     checkStack();
 }
 
-void LuaInterface::pushNumber(const double v)
+void LuaInterface::pushNumber(double v)
 {
     lua_pushnumber(L, v);
     checkStack();
 }
 
-void LuaInterface::pushBoolean(const bool v)
+void LuaInterface::pushBoolean(bool v)
 {
     lua_pushboolean(L, v);
     checkStack();
@@ -1199,7 +1199,7 @@ void LuaInterface::pushObject(const LuaObjectPtr& obj)
     setMetatable();
 }
 
-void LuaInterface::pushCFunction(const LuaCFunction func, const int n)
+void LuaInterface::pushCFunction(LuaCFunction func, int n)
 {
     lua_pushcclosure(L, func, n);
     checkStack();
@@ -1221,87 +1221,87 @@ void LuaInterface::pushCppFunction(const LuaCppFunction& func)
     pushCFunction(&LuaInterface::luaCppFunctionCallback, 1);
 }
 
-void LuaInterface::pushValue(const int index)
+void LuaInterface::pushValue(int index)
 {
     assert(hasIndex(index));
     lua_pushvalue(L, index);
     checkStack();
 }
 
-bool LuaInterface::isNil(const int index)
+bool LuaInterface::isNil(int index)
 {
     assert(hasIndex(index));
     return lua_isnil(L, index);
 }
 
-bool LuaInterface::isBoolean(const int index)
+bool LuaInterface::isBoolean(int index)
 {
     assert(hasIndex(index));
     return lua_isboolean(L, index);
 }
 
-bool LuaInterface::isNumber(const int index)
+bool LuaInterface::isNumber(int index)
 {
     assert(hasIndex(index));
     return lua_isnumber(L, index);
 }
 
-bool LuaInterface::isString(const int index)
+bool LuaInterface::isString(int index)
 {
     assert(hasIndex(index));
     return lua_isstring(L, index);
 }
 
-bool LuaInterface::isTable(const int index)
+bool LuaInterface::isTable(int index)
 {
     assert(hasIndex(index));
     return lua_istable(L, index);
 }
 
-bool LuaInterface::isFunction(const int index)
+bool LuaInterface::isFunction(int index)
 {
     assert(hasIndex(index));
     return lua_isfunction(L, index);
 }
 
-bool LuaInterface::isCFunction(const int index)
+bool LuaInterface::isCFunction(int index)
 {
     assert(hasIndex(index));
     return lua_iscfunction(L, index);
 }
 
-bool LuaInterface::isUserdata(const int index)
+bool LuaInterface::isUserdata(int index)
 {
     assert(hasIndex(index));
     return lua_isuserdata(L, index);
 }
 
-bool LuaInterface::toBoolean(const int index)
+bool LuaInterface::toBoolean(int index)
 {
     assert(hasIndex(index));
     return static_cast<bool>(lua_toboolean(L, index));
 }
 
-int LuaInterface::toInteger(const int index)
+int LuaInterface::toInteger(int index)
 {
     assert(hasIndex(index));
     return lua_tointeger(L, index);
 }
 
-double LuaInterface::toNumber(const int index)
+double LuaInterface::toNumber(int index)
 {
     assert(hasIndex(index));
     return lua_tonumber(L, index);
 }
 
-std::string_view LuaInterface::toVString(const int index)
+std::string_view LuaInterface::toVString(int index)
 {
     assert(hasIndex(index));
     const char* value = lua_tostring(L, index);
     return value != nullptr ? value : ""sv;
 }
 
-std::string LuaInterface::toString(const int index)
+std::string LuaInterface::toString(int index)
 {
     assert(hasIndex(index));
     std::string str;
@@ -1312,13 +1312,13 @@ std::string LuaInterface::toString(const int index)
     return str;
 }
 
-void* LuaInterface::toUserdata(const int index)
+void* LuaInterface::toUserdata(int index)
 {
     assert(hasIndex(index));
     return lua_touserdata(L, index);
 }
 
-LuaObjectPtr LuaInterface::toObject(const int index)
+LuaObjectPtr LuaInterface::toObject(int index)
 {
     assert(hasIndex(index));
     if (isUserdata(index)) {
@@ -1334,7 +1334,7 @@ int LuaInterface::getTop() const
     return lua_gettop(L);
 }
 
-std::string LuaInterface::getSource(const int level)
+std::string LuaInterface::getSource(int level)
 {
     lua_Debug ar;
     ar.short_src[0] = 0;
@@ -1345,7 +1345,7 @@ std::string LuaInterface::getSource(const int level)
     return std::string(ar.short_src) + ":" + std::to_string(ar.currentline);
 }
 
-void LuaInterface::loadFiles(const std::string& directory, const bool recursive, const std::string& contains)
+void LuaInterface::loadFiles(const std::string& directory, bool recursive, const std::string& contains)
 {
     for (const std::string& fileName : g_resources.listDirectoryFiles(directory)) {
         std::string fullPath = directory.data() + "/"s + fileName;

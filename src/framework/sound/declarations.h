@@ -30,8 +30,8 @@
 #else
 #include <AL/al.h>
 #include <AL/alc.h>
-#include <AL/efx-presets.h>
 #include <AL/efx.h>
+#include <AL/efx-presets.h>
 #endif
 
 class SoundManager;

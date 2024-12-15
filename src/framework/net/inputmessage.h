@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include "declarations.h"
 #include <framework/luaengine/luaobject.h>
+#include "declarations.h"
 
  // @bindclass
-class InputMessage final : public LuaObject
+class InputMessage : public LuaObject
 {
 public:
     enum
@@ -38,8 +38,8 @@ public:
     void setBuffer(const std::string& buffer);
     std::string_view getBuffer() { return std::string_view{ (char*)m_buffer + m_headerPos, m_messageSize }; }
 
-    void skipBytes(const uint16_t bytes) { m_readPos += bytes; }
-    void setReadPos(const uint16_t readPos) { m_readPos = readPos; }
+    void skipBytes(uint16_t bytes) { m_readPos += bytes; }
+    void setReadPos(uint16_t readPos) { m_readPos = readPos; }
     uint8_t getU8();
     uint16_t getU16();
     uint32_t getU32();
@@ -76,10 +76,10 @@ public:
 
 protected:
     void reset();
-    void fillBuffer(const uint8_t* buffer, uint16_t size);
+    void fillBuffer(uint8_t* buffer, uint16_t size);
 
     void setHeaderSize(uint16_t size);
-    void setMessageSize(const uint16_t size) { m_messageSize = size; }
+    void setMessageSize(uint16_t size) { m_messageSize = size; }
 
     uint8_t* getReadBuffer() { return m_buffer + m_readPos; }
     uint8_t* getHeaderBuffer() { return m_buffer + m_headerPos; }

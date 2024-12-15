@@ -29,6 +29,10 @@ EnterGameWindow
   &disableToken : false
   size: 280 302
   @onEnter: EnterGame.doLogin()
+  opacity: 0.85
+  /*image-source: /images/ui/window2.png*/
+  margin-top: 75
+  draggable: false
 
 
 
@@ -37,7 +41,7 @@ EnterGameWindow
     !text: tr('Acc Name:') 
     anchors.left: parent.left
     anchors.top: parent.top
-
+    margin-top: 4
     opacity: 0.8
 
       
@@ -46,7 +50,8 @@ EnterGameWindow
     !text: tr('Password:')
     anchors.left: emailLabel.left
     anchors.top: emailLabel.bottom
-    margin-top: 10
+    
+    margin-top: 20
     opacity: 0.8
 
   HiddenTextQtToggleEdit
@@ -69,7 +74,7 @@ EnterGameWindow
     anchors.left: passwordLabel.left
     anchors.right: parent.right
     anchors.top: accountPasswordTextEdit.bottom
-    margin-top: 10
+    margin-top: 
     opacity: 0.8
     @onCheckChange: |
       self:getParent():getChildById('autoLoginBox'):setEnabled(self:isChecked())
@@ -81,7 +86,7 @@ EnterGameWindow
     !specialtooltip: 'Be aware that your email address will be stored on your configuration file "config.otml" if you activate this option.'
     anchors.right: accountNameTextEdit.right
     anchors.verticalCenter: rememberEmailBox.verticalCenter
-    visible: false
+    visible: true
 
     $on:
       visible: true
@@ -96,15 +101,14 @@ EnterGameWindow
     anchors.left: rememberEmailBox.left
     anchors.right: parent.right
     anchors.top: rememberEmailBox.bottom
-    opacity: 0.8
-    margin-top: 5
+    opacity: 0.65
+    margin-top: 7
     @onClick: g_platform.openUrl(Services.websites)
     @onSetup: | 
         if Services and Services.websites then
             self:setVisible(true)
         else
-            self:setVisible(false)
-            self:hide()
+            self:setVisible(true)
         end
 
   MenuLabel
@@ -147,18 +151,13 @@ EnterGameWindow
       visible: true
       margin-top: 8
 
-  HorizontalSeparator
-    anchors.left: parent.left
-    anchors.right: parent.right
-    anchors.top: prev.bottom
-    margin-top: 8
 
   MenuLabel
     id: serverLabel
     !text: tr('Server')
     anchors.left: prev.left
     anchors.top: prev.bottom
-    margin-top: 8
+    margin-top: -1
     text-auto-resize: true
 
   ServerListButton
@@ -224,6 +223,7 @@ EnterGameWindow
     anchors.right: parent.right
     anchors.top: prev.bottom
     margin-top: 2
+    visible: false
 
   QtCheckBox
     id: httpLoginBox
@@ -239,7 +239,7 @@ EnterGameWindow
     anchors.left: parent.left
     anchors.right: parent.right
     anchors.top: prev.bottom
-    margin-top: 6
+    margin-top: -10
 
   QtButton
     !text: tr('Login')
@@ -261,7 +261,7 @@ EnterGameWindow
       if Services and Services.websites then
         self:setVisible(true)
       else
-        self:setVisible(false)
+        self:setVisible(true)
       end
 
   Label
@@ -273,3 +273,12 @@ EnterGameWindow
     color: green
     text-auto-resize: true
 
+  UIWidget
+    id: exibeLogo
+    anchors.top: parent.top
+    margin-top: -278
+    anchors.horizontalCenter: parent.horizontalCenter
+    width: 512
+    height: 275
+    image-source: /images/logo.png
+   

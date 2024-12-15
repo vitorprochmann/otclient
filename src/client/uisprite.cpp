@@ -27,7 +27,7 @@
 #include "framework/graphics/drawpool.h"
 #include "framework/graphics/drawpoolmanager.h"
 
-void UISprite::drawSelf(const DrawPoolType drawPane)
+void UISprite::drawSelf(DrawPoolType drawPane)
 {
     if (drawPane != DrawPoolType::FOREGROUND)
         return;
@@ -50,7 +50,7 @@ void UISprite::drawSelf(const DrawPoolType drawPane)
     drawText(m_rect);
 }
 
-void UISprite::setSpriteId(const int id)
+void UISprite::setSpriteId(int id)
 {
     if (!g_sprites.isLoaded())
         return;

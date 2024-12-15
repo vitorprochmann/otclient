@@ -22,16 +22,16 @@
 
 #pragma once
 
-#include "declarations.h"
-#include "thingtype.h"
 #include <framework/graphics/declarations.h>
 #include <framework/graphics/framebuffer.h>
+#include "declarations.h"
+#include "thingtype.h"
 
-class LightView final : public LuaObject
+class LightView : public LuaObject
 {
 public:
     LightView(const Size& size);
-    ~LightView() override { m_texture = nullptr; }
+    ~LightView() { m_texture = nullptr; }
 
     void resize(const Size& size, uint16_t tileSize);
     void draw(const Rect& dest, const Rect& src);
@@ -48,15 +48,15 @@ public:
 
     bool isDark() const { return m_isDark; }
     bool isEnabled() const { return m_pool->isEnabled(); }
-    void setEnabled(const bool v) { m_pool->setEnable(v); }
+    void setEnabled(bool v) { m_pool->setEnable(v); }
 
 private:
-    struct TileLight : Light
+    struct TileLight : public Light
     {
         Point pos;
         float brightness{ 1.f };
 
-        TileLight(const Point& pos, const uint8_t intensity, const uint8_t color, const float brightness) : Light(intensity, color), pos(pos), brightness(brightness) {}
+        TileLight(const Point& pos, uint8_t intensity, uint8_t color, float brightness) : Light(intensity, color), pos(pos), brightness(brightness) {}
     };
 
     struct LightData

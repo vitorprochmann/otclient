@@ -27,14 +27,14 @@
 #include "uiboxlayout.h"
 
  // @bindclass
-class UIVerticalLayout final : public UIBoxLayout
+class UIVerticalLayout : public UIBoxLayout
 {
 public:
     UIVerticalLayout(UIWidgetPtr parentWidget) : UIBoxLayout(std::move(parentWidget)) {}
 
     void applyStyle(const OTMLNodePtr& styleNode) override;
 
-    void setAlignBottom(const bool aliginBottom) { m_alignBottom = aliginBottom; update(); }
+    void setAlignBottom(bool aliginBottom) { m_alignBottom = aliginBottom; update(); }
     bool isAlignBottom() { return m_alignBottom; }
 
     bool isUIVerticalLayout() override { return true; }

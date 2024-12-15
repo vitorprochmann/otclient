@@ -22,15 +22,16 @@
 
 #pragma once
 
-#include "mapview.h"
-#include "outfit.h"
-#include "thing.h"
 #include <framework/core/declarations.h>
 #include <framework/core/timer.h>
 #include <framework/graphics/cachedtext.h>
+#include "mapview.h"
+#include "outfit.h"
+#include "thing.h"
 
 struct PreyMonster
 {
+public:
     std::string name;
     Outfit outfit;
 };
@@ -44,7 +45,7 @@ public:
     static double speedC;
 
     Creature();
-    ~Creature() override;
+    ~Creature();
 
     static bool hasSpeedFormula();
 
@@ -60,9 +61,9 @@ public:
     void internalDraw(Point dest, const Color& color = Color::white);
     void drawInformation(const MapPosInfo& mapRect, const Point& dest, int drawFlags);
 
-    void setId(const uint32_t id) override { m_id = id; }
-    void setMasterId(const uint32_t id) { m_masterId = id; }
-    void setName(std::string_view name);
+    void setId(uint32_t id) override { m_id = id; }
+    void setMasterId(uint32_t id) { m_masterId = id; }
+    void setName(const std::string_view name);
     void setHealthPercent(uint8_t healthPercent);
     void setDirection(Otc::Direction direction);
     void setOutfit(const Outfit& outfit);
@@ -79,8 +80,8 @@ public:
     void setEmblemTexture(const std::string& filename);
     void setTypeTexture(const std::string& filename);
     void setIconTexture(const std::string& filename);
-    void setPassable(const bool passable) { m_passable = passable; }
-    void setMountShader(std::string_view name);
+    void setPassable(bool passable) { m_passable = passable; }
+    void setMountShader(const std::string_view name);
     void setStaticWalking(uint16_t v);
 
     void onStartAttachEffect(const AttachedEffectPtr& effect) override;
@@ -159,7 +160,7 @@ public:
     void setCovered(bool covered);
 
     bool isDisabledWalkAnimation() { return m_disableWalkAnimation > 0; }
-    void setDisableWalkAnimation(const bool v) {
+    void setDisableWalkAnimation(bool v) {
         if (v) ++m_disableWalkAnimation; else {
             if (m_disableWalkAnimation <= 1) m_disableWalkAnimation = 0;
             else --m_disableWalkAnimation;
@@ -170,12 +171,7 @@ public:
     void sendTyping();
     bool getTyping() { return m_typing; }
     void setTypingIconTexture(const std::string& filename);
-    void setBounce(const uint8_t minHeight, const uint8_t height, const uint16_t speed) {
-        m_bounce = { .minHeight =
-minHeight,
-.height = height, .speed = speed
-        };
-    }
+    void setBounce(uint8_t minHeight, uint8_t height, uint16_t speed) { m_bounce = { minHeight, height , speed }; }
 
     void setWidgetInformation(const UIWidgetPtr& info);
     UIWidgetPtr getWidgetInformation() { return m_widgetInformation; }
@@ -223,7 +219,7 @@ private:
         uint16_t walkDuration{ 0 };
         uint16_t diagonalDuration{ 0 };
 
-        uint16_t getDuration(const Otc::Direction dir) const { return Position::isDiagonal(dir) ? diagonalDuration : duration; }
+        uint16_t getDuration(Otc::Direction dir) const { return Position::isDiagonal(dir) ? diagonalDuration : duration; }
     };
 
     UIWidgetPtr m_widgetInformation;
@@ -320,14 +316,14 @@ private:
 };
 
 // @bindclass
-class Npc final : public Creature
+class Npc : public Creature
 {
 public:
     bool isNpc() override { return true; }
 };
 
 // @bindclass
-class Monster final : public Creature
+class Monster : public Creature
 {
 public:
     bool isMonster() override { return true; }

@@ -26,10 +26,10 @@
 #include <cstddef>
 #include <cstdint>
 
-using uchar = unsigned char;
-using ushort = unsigned short;
-using uint = unsigned int;
-using ulong = unsigned long;
+typedef unsigned char uchar;
+typedef unsigned short ushort;
+typedef unsigned int uint;
+typedef unsigned long ulong;
 
 using ticks_t = int64_t;
 using refcount_t = uint_fast32_t;

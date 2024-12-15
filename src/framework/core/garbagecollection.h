@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include "timer.h"
 #include <framework/global.h>
+#include "timer.h"
 
 class GarbageCollection
 {

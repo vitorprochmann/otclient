@@ -26,12 +26,12 @@
 
 #include "uiwidget.h"
 
- // @bindclass
-class UIQrCode final : public UIWidget
+// @bindclass
+class UIQrCode : public UIWidget
 {
 public:
     void setCode(const std::string& code, int border);
-    void setCodeBorder(const int border) { m_qrCodeBorder = border; setCode(m_qrCode, border); }
+    void setCodeBorder(int border) { m_qrCodeBorder = border; setCode(m_qrCode, border); }
 
     std::string getCode() { return m_qrCode; }
     int getCodeBorder() { return m_qrCodeBorder; }

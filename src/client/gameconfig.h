@@ -24,8 +24,8 @@
 
 #include "declarations.h"
 
-#include <framework/graphics/bitmapfont.h>
 #include <framework/otml/declarations.h>
+#include <framework/graphics/bitmapfont.h>
 
  // @bindclass
 class GameConfig

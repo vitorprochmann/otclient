@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "declarations.h"
 #include <framework/luaengine/luaobject.h>
+#include "declarations.h"
 
-class Server final : public LuaObject
+class Server : public LuaObject
 {
 public:
     Server(int port);

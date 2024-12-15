@@ -40,6 +40,7 @@ TopMenuPanel
   width: 1020
   height: 32
   image-source: /images/ui/top_bar_login
+  opacity: 0.75
 
   TopMenuButtonsPanel
     id: topLeftTogglesPanel
@@ -184,3 +185,5 @@ TopMenuPanel
     anchors.bottom: parent.bottom
     anchors.right: prev.left
     visible: false
+
+

@@ -28,6 +28,7 @@ Panel
   anchors.bottom: parent.bottom
   anchors.horizontalCenter: parent.horizontalCenter
   image-source: /images/ui/panel_top
+  opacity: 0.55
   
   UIWidget
     phantom: true
@@ -37,7 +38,7 @@ Panel
     text-auto-resize: true
     color: #e98d02
     margin-bottom: 110
-    text: OTClient Redemption
+    /*text: OTClient Redemption*/
     font: verdana-11px-rounded
     font-scale: 4
     shader: Map - Party
@@ -71,6 +72,7 @@ Panel
     size: 246 116
     draggable: false
 
+
     Label
       !text: tr('Event Schedule')
       font: verdana-11px-antialised
@@ -101,6 +103,7 @@ Panel
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.horizontalCenter
+        
 
       CalendarDay
         id: activeScheduleEvent

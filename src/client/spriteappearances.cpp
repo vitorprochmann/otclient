@@ -21,13 +21,12 @@
  */
 
 #include "spriteappearances.h"
-#include "game.h"
 #include <framework/core/filestream.h>
-#include <framework/core/graphicalapplication.h>
 #include <framework/core/resourcemanager.h>
+#include <framework/core/graphicalapplication.h>
 #include <framework/graphics/image.h>
+#include "game.h"
 
-#include <algorithm>
 #include <framework/core/asyncdispatcher.h>
 #include <nlohmann/json.hpp>
 
@@ -168,14 +167,14 @@ void SpriteAppearances::unload()
     m_sheets.clear();
 }
 
-SpriteSheetPtr SpriteAppearances::getSheetBySpriteId(const int id, const bool load /* = true */)
+SpriteSheetPtr SpriteAppearances::getSheetBySpriteId(int id, bool load /* = true */)
 {
     if (id == 0) {
         return nullptr;
     }
 
     // find sheet
-    const auto sheetIt = std::ranges::find_if(m_sheets, [=](const SpriteSheetPtr& sheet) {
+    const auto sheetIt = std::find_if(m_sheets.begin(), m_sheets.end(), [=](const SpriteSheetPtr& sheet) {
         return id >= sheet->firstId && id <= sheet->lastId;
     });
 
@@ -190,7 +189,7 @@ SpriteSheetPtr SpriteAppearances::getSheetBySpriteId(const int id, const bool lo
     return sheet;
 }
 
-ImagePtr SpriteAppearances::getSpriteImage(const int id)
+ImagePtr SpriteAppearances::getSpriteImage(int id)
 {
     try {
         const auto& sheet = getSheetBySpriteId(id);
@@ -232,14 +231,14 @@ ImagePtr SpriteAppearances::getSpriteImage(const int id)
     }
 }
 
-void SpriteAppearances::saveSpriteToFile(const int id, const std::string& file)
+void SpriteAppearances::saveSpriteToFile(int id, const std::string& file)
 {
     if (const auto& sprite = getSpriteImage(id)) {
         sprite->savePNG(file);
     }
 }
 
-void SpriteAppearances::saveSheetToFileBySprite(const int id, const std::string& file)
+void SpriteAppearances::saveSheetToFileBySprite(int id, const std::string& file)
 {
     if (const auto& sheet = getSheetBySpriteId(id)) {
         Image image({ SpriteSheet::SIZE }, 4, sheet->data.get());

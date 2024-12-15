@@ -24,7 +24,7 @@
 
 #include "soundsource.h"
 
-class CombinedSoundSource final : public SoundSource
+class CombinedSoundSource : public SoundSource
 {
 public:
     CombinedSoundSource();

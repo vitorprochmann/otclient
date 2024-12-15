@@ -28,7 +28,7 @@
 class ParticleAffector
 {
 public:
-    virtual ~ParticleAffector() = default; // fix clang warning
+    virtual ~ParticleAffector() {} // fix clang warning
 
     void update(float elapsedTime);
     virtual void load(const OTMLNodePtr& node);
@@ -44,7 +44,7 @@ protected:
     float m_elapsedTime{ 0 };
 };
 
-class GravityAffector final : public ParticleAffector
+class GravityAffector : public ParticleAffector
 {
 public:
     void load(const OTMLNodePtr& node) override;
@@ -55,7 +55,7 @@ private:
     float m_gravity{ 0 };
 };
 
-class AttractionAffector final : public ParticleAffector
+class AttractionAffector : public ParticleAffector
 {
 public:
     void load(const OTMLNodePtr& node) override;

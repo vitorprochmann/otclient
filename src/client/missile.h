@@ -22,16 +22,16 @@
 
 #pragma once
 
-#include "thing.h"
-#include <framework/core/timer.h>
 #include <framework/global.h>
+#include <framework/core/timer.h>
+#include "thing.h"
 
  // @bindclass
-class Missile final : public Thing
+class Missile : public Thing
 {
 public:
-    Missile() { m_drawConductor = { .agroup = true, .order = FIFTH }; };
-    void draw(const Point& dest, bool drawThings = true, const LightViewPtr& lightView = nullptr) override;
+    Missile() { m_drawConductor = { true, DrawOrder::FIFTH }; };
+    void draw(const Point& dest, bool drawThings = true, const LightViewPtr& lightView = nullptr);
 
     void setId(uint32_t id) override;
     void setPath(const Position& fromPosition, const Position& toPosition);

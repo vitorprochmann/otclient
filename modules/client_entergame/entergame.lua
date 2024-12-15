@@ -808,11 +808,11 @@ function EnterGame.setUniqueServer(host, port, protocol, windowWidth, windowHeig
     rememberEmailBox:setMarginTop(5)
 
     if not windowWidth then
-        windowWidth = 380
+        windowWidth = 275
     end
     enterGame:setWidth(windowWidth)
     if not windowHeight then
-        windowHeight = 210
+        windowHeight = 185
     end
 
     enterGame:setHeight(windowHeight)

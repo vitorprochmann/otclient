@@ -23,7 +23,6 @@
 #include "mapview.h"
 
 #include "animatedtext.h"
-#include "client.h"
 #include "creature.h"
 #include "game.h"
 #include "lightview.h"
@@ -31,17 +30,16 @@
 #include "missile.h"
 #include "statictext.h"
 #include "tile.h"
+#include "client.h"
 
-#include "framework/graphics/texturemanager.h"
 #include <framework/core/application.h>
 #include <framework/core/eventdispatcher.h>
 #include <framework/core/resourcemanager.h>
 #include <framework/graphics/drawpoolmanager.h>
 #include <framework/graphics/graphics.h>
+#include "framework/graphics/texturemanager.h"
 #include <framework/graphics/shadermanager.h>
 #include <framework/platform/platformwindow.h>
-
-#include <algorithm>
 
 MapView::MapView() : m_lightView(std::make_unique<LightView>(Size())), m_pool(g_drawPool.get(DrawPoolType::MAP))
 {
@@ -122,7 +120,7 @@ void MapView::drawFloor()
 {
     const auto& cameraPosition = m_posInfo.camera;
 
-    const uint32_t flags = Otc::DrawThings;
+    uint32_t flags = Otc::DrawThings;
 
     for (int_fast8_t z = m_floorMax; z >= m_floorMin; --z) {
         const float fadeLevel = getFadeLevel(z);
@@ -452,16 +450,16 @@ void MapView::updateGeometry(const Size& visibleDimension)
         m_lightView->resize(lightSize, tileSize);
     }
 
-    g_mainDispatcher.addEvent([this, bufferSize] {
+    g_mainDispatcher.addEvent([this, bufferSize]() {
         m_pool->getFrameBuffer()->resize(bufferSize);
     });
 
     const uint8_t left = std::min<uint8_t>(g_map.getAwareRange().left, (m_drawDimension.width() / 2) - 1);
     const uint8_t top = std::min<uint8_t>(g_map.getAwareRange().top, (m_drawDimension.height() / 2) - 1);
-    const auto right = static_cast<uint8_t>(left + 1);
-    const auto bottom = static_cast<uint8_t>(top + 1);
+    const uint8_t right = static_cast<uint8_t>(left + 1);
+    const uint8_t bottom = static_cast<uint8_t>(top + 1);
 
-    m_posInfo.awareRange = { .left = left, .top = top, .right = right, .bottom = bottom };
+    m_posInfo.awareRange = { left, top, right, bottom };
 
     updateViewportDirectionCache();
     updateViewport();
@@ -538,7 +536,7 @@ void MapView::onMapCenterChange(const Position& /*newPos*/, const Position& /*ol
     requestUpdateVisibleTiles();
 }
 
-void MapView::lockFirstVisibleFloor(const uint8_t firstVisibleFloor)
+void MapView::lockFirstVisibleFloor(uint8_t firstVisibleFloor)
 {
     m_lockedFirstVisibleFloor = firstVisibleFloor;
     requestUpdateVisibleTiles();
@@ -577,7 +575,7 @@ void MapView::setVisibleDimension(const Size& visibleDimension)
     updateGeometry(visibleDimension);
 }
 
-void MapView::setFloorViewMode(const FloorViewMode floorViewMode)
+void MapView::setFloorViewMode(FloorViewMode floorViewMode)
 {
     m_floorViewMode = floorViewMode;
 
@@ -589,7 +587,7 @@ void MapView::setAntiAliasingMode(const AntialiasingMode mode)
 {
     m_antiAliasingMode = mode;
 
-    g_mainDispatcher.addEvent([=, this] {
+    g_mainDispatcher.addEvent([=, this]() {
         m_pool->getFrameBuffer()->setSmooth(mode != ANTIALIASING_DISABLED);
     });
 
@@ -614,7 +612,7 @@ void MapView::setCameraPosition(const Position& pos)
 
 Position MapView::getPosition(const Point& mousePos)
 {
-    const auto newMousePos = mousePos * g_window.getDisplayDensity();
+    auto newMousePos = mousePos * g_window.getDisplayDensity();
     if (!m_posInfo.rect.contains(newMousePos))
         return {};
 
@@ -649,7 +647,7 @@ Position MapView::getPosition(const Point& point, const Size& mapSize)
     return position;
 }
 
-void MapView::move(const int32_t x, const int32_t y)
+void MapView::move(int32_t x, int32_t y)
 {
     m_moveOffset.x += x;
     m_moveOffset.y += y;
@@ -695,7 +693,7 @@ Rect MapView::calcFramebufferSource(const Size& destSize)
     return Rect(drawOffset, srcSize);
 }
 
-uint8_t MapView::calcFirstVisibleFloor(const bool checkLimitsFloorsView) const
+uint8_t MapView::calcFirstVisibleFloor(bool checkLimitsFloorsView) const
 {
     uint8_t z = g_gameConfig.getMapSeaFloor();
     // return forced first visible floor
@@ -794,7 +792,7 @@ TilePtr MapView::getTopTile(Position tilePos) const
     return nullptr;
 }
 
-void MapView::setShader(const std::string_view name, const float fadein, const float fadeout)
+void MapView::setShader(const std::string_view name, float fadein, float fadeout)
 {
     const auto& shader = g_shaders.getShader(name);
 
@@ -819,7 +817,7 @@ void MapView::setShader(const std::string_view name, const float fadein, const f
     });
 }
 
-void MapView::setDrawLights(const bool enable)
+void MapView::setDrawLights(bool enable)
 {
     m_drawingLight = enable;
 
@@ -879,12 +877,12 @@ void MapView::updateViewportDirectionCache()
 }
 
 Position MapView::getCameraPosition() { return isFollowingCreature() ? m_followingCreature->getPosition() : m_customCameraPosition; }
-std::vector<CreaturePtr> MapView::getSightSpectators(const bool multiFloor)
+std::vector<CreaturePtr> MapView::getSightSpectators(bool multiFloor)
 {
     return g_map.getSpectatorsInRangeEx(getCameraPosition(), multiFloor, m_posInfo.awareRange.left - 1, m_posInfo.awareRange.right - 2, m_posInfo.awareRange.top - 1, m_posInfo.awareRange.bottom - 2);
 }
 
-std::vector<CreaturePtr> MapView::getSpectators(const bool multiFloor)
+std::vector<CreaturePtr> MapView::getSpectators(bool multiFloor)
 {
     return g_map.getSpectatorsInRangeEx(getCameraPosition(), multiFloor, m_posInfo.awareRange.left, m_posInfo.awareRange.right, m_posInfo.awareRange.top, m_posInfo.awareRange.bottom);
 }
@@ -911,12 +909,12 @@ void MapView::destroyHighlightTile() {
 void MapView::addForegroundTile(const TilePtr& tile) {
     std::scoped_lock l(g_drawPool.get(DrawPoolType::FOREGROUND_MAP)->getMutex());
 
-    if (std::ranges::find(m_foregroundTiles, tile) == m_foregroundTiles.end())
+    if (std::find(m_foregroundTiles.begin(), m_foregroundTiles.end(), tile) == m_foregroundTiles.end())
         m_foregroundTiles.emplace_back(tile);
 }
 void MapView::removeForegroundTile(const TilePtr& tile) {
     std::scoped_lock l(g_drawPool.get(DrawPoolType::FOREGROUND_MAP)->getMutex());
-    const auto it = std::ranges::find(m_foregroundTiles, tile);
+    const auto it = std::find(m_foregroundTiles.begin(), m_foregroundTiles.end(), tile);
     if (it == m_foregroundTiles.end())
         return;
 

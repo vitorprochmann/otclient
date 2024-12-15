@@ -26,7 +26,7 @@
 
 UIItem::UIItem() { setProp(PropDraggable, true, false); }
 
-void UIItem::drawSelf(const DrawPoolType drawPane)
+void UIItem::drawSelf(DrawPoolType drawPane)
 {
     if (drawPane != DrawPoolType::FOREGROUND)
         return;
@@ -66,7 +66,7 @@ void UIItem::drawSelf(const DrawPoolType drawPane)
     drawText(m_rect);
 }
 
-void UIItem::setItemId(const int id)
+void UIItem::setItemId(int id)
 {
     if (id == 0)
         m_item = nullptr;
@@ -79,7 +79,7 @@ void UIItem::setItemId(const int id)
 #endif
 }
 
-void UIItem::setItemCount(const int count)
+void UIItem::setItemCount(int count) 
 {
     if (m_item) m_item->setCount(count);
 #ifndef BOT_PROTECTION
@@ -87,17 +87,17 @@ void UIItem::setItemCount(const int count)
 #endif
 }
 
-void UIItem::setItemSubType(const int subType)
-{
-    if (m_item) m_item->setSubType(subType);
+void UIItem::setItemSubType(int subType)
+{ 
+    if (m_item) m_item->setSubType(subType); 
 #ifndef BOT_PROTECTION
     callLuaField("onItemChange");
 #endif
 }
 
-void UIItem::setItem(const ItemPtr& item)
-{
-    m_item = item;
+void UIItem::setItem(const ItemPtr& item) 
+{ 
+    m_item = item; 
 
 #ifndef BOT_PROTECTION
     callLuaField("onItemChange");

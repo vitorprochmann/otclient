@@ -27,10 +27,9 @@
 
 extern asio::io_service g_ioService;
 
-Server::Server(const int port)
+Server::Server(int port)
     : m_acceptor(g_ioService, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port))
-{
-}
+{}
 
 ServerPtr Server::create(int port)
 {
@@ -52,7 +51,7 @@ void Server::close()
 void Server::acceptNext()
 {
     const auto& connection = std::make_shared<Connection>();
-    connection->m_connecting = true;
+        connection->m_connecting = true;
 
     const auto self = static_self_cast<Server>();
     m_acceptor.async_accept(connection->m_socket, [=](const std::error_code& error) {

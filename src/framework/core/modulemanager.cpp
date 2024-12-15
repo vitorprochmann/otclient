@@ -24,11 +24,9 @@
 #include "resourcemanager.h"
 
 #include <framework/core/application.h>
-#include <framework/core/asyncdispatcher.h>
 #include <framework/core/eventdispatcher.h>
+#include <framework/core/asyncdispatcher.h>
 #include <framework/otml/otml.h>
-
-#include <algorithm>
 
 ModuleManager g_modules;
 
@@ -57,7 +55,7 @@ void ModuleManager::discoverModules()
     }
 }
 
-void ModuleManager::autoLoadModules(const int maxPriority)
+void ModuleManager::autoLoadModules(int maxPriority)
 {
     for (const auto& [priority, module] : m_autoLoadModules) {
         if (priority > maxPriority)
@@ -134,7 +132,7 @@ ModulePtr ModuleManager::getModule(const std::string_view moduleName)
 
 void ModuleManager::updateModuleLoadOrder(const ModulePtr& module)
 {
-    if (const auto it = std::ranges::find(m_modules, module);
+    if (const auto it = std::find(m_modules.begin(), m_modules.end(), module);
         it != m_modules.end())
         m_modules.erase(it);
     if (module->isLoaded())
@@ -166,7 +164,7 @@ void ModuleManager::enableAutoReload() {
         if (!module->isReloadable())
             continue;
 
-        ModuleData data = { .ref = module, .files = {} };
+        ModuleData data = { module, {} };
 
         bool hasFile = false;
         for (auto path : g_resources.listDirectoryFiles("/" + module->getName(), true, false, true)) {

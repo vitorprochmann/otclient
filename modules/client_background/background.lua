@@ -50,13 +50,13 @@ function show()
     background:show()
 end
 
-function hideVersionLabel()
-    background:getChildById('clientVersionLabel'):hide()
-end
+-- function hideVersionLabel()
+    -- background:getChildById('clientVersionLabel'):hide()
+-- end
 
-function setVersionText(text)
-    clientVersionLabel:setText(text)
-end
+-- function setVersionText(text)
+    -- clientVersionLabel:setText(text)
+-- end
 
 function getBackground()
     return background

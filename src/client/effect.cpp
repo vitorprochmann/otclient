@@ -21,13 +21,13 @@
  */
 
 #include "effect.h"
+#include <framework/core/eventdispatcher.h>
+#include <framework/core/graphicalapplication.h>
 #include "game.h"
 #include "map.h"
 #include <client/client.h>
-#include <framework/core/eventdispatcher.h>
-#include <framework/core/graphicalapplication.h>
 
-void Effect::draw(const Point& dest, const bool drawThings, const LightViewPtr& lightView)
+void Effect::draw(const Point& dest, bool drawThings, const LightViewPtr& lightView)
 {
     if (!canDraw() || isHided())
         return;
@@ -57,11 +57,11 @@ void Effect::draw(const Point& dest, const bool drawThings, const LightViewPtr& 
     const int offsetX = m_position.x - g_map.getCentralPosition().x;
     const int offsetY = m_position.y - g_map.getCentralPosition().y;
 
-    int xPattern = static_cast<unsigned>(offsetX) % getNumPatternX();
+    int xPattern = unsigned(offsetX) % getNumPatternX();
     xPattern = 1 - xPattern - getNumPatternX();
     if (xPattern < 0) xPattern += getNumPatternX();
 
-    int yPattern = static_cast<unsigned>(offsetY) % getNumPatternY();
+    int yPattern = unsigned(offsetY) % getNumPatternY();
 
     if (g_game.getFeature(Otc::GameMapOldEffectRendering)) {
         xPattern = offsetX % getNumPatternX();
@@ -76,7 +76,7 @@ void Effect::draw(const Point& dest, const bool drawThings, const LightViewPtr& 
     if (g_drawPool.getCurrentType() == DrawPoolType::MAP) {
         if (g_app.isDrawingEffectsOnTop() && !m_drawConductor.agroup) {
             m_drawConductor.agroup = true;
-            m_drawConductor.order = FOURTH;
+            m_drawConductor.order = DrawOrder::FOURTH;
         }
 
         if (drawThings && g_client.getEffectAlpha() < 1.f)
@@ -126,7 +126,7 @@ bool Effect::waitFor(const EffectPtr& effect)
     return true;
 }
 
-void Effect::setId(const uint32_t id)
+void Effect::setId(uint32_t id)
 {
     if (!g_things.isValidDatId(id, ThingCategoryEffect))
         return;
@@ -134,7 +134,7 @@ void Effect::setId(const uint32_t id)
     m_clientId = id;
 }
 
-void Effect::setPosition(const Position& position, const uint8_t stackPos, const bool hasElevation)
+void Effect::setPosition(const Position& position, uint8_t stackPos, bool hasElevation)
 {
     if (m_clientId == 0)
         return;

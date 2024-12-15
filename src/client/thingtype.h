@@ -26,14 +26,13 @@
 #include "declarations.h"
 #include "gameconfig.h"
 
-#include <algorithm>
+#include <variant>
 #include <framework/core/declarations.h>
 #include <framework/graphics/drawpoolmanager.h>
 #include <framework/graphics/texture.h>
 #include <framework/luaengine/luaobject.h>
 #include <framework/net/server.h>
 #include <framework/otml/declarations.h>
-#include <variant>
 
 using namespace otclient::protobuf;
 
@@ -245,7 +244,7 @@ struct Imbuement
 
 struct ImbuementSlot
 {
-    ImbuementSlot(const uint8_t id) : id(id) {}
+    ImbuementSlot(uint8_t id) : id(id) { }
 
     uint8_t id;
     std::string name;
@@ -256,8 +255,8 @@ struct ImbuementSlot
 
 struct ImbuementTrackerItem
 {
-    ImbuementTrackerItem() : slot(0) {}
-    ImbuementTrackerItem(const uint8_t slot) : slot(slot) {}
+    ImbuementTrackerItem() : slot(0) { }
+    ImbuementTrackerItem(uint8_t slot) : slot(slot) { }
 
     uint8_t slot;
     ItemPtr item;
@@ -300,12 +299,12 @@ struct MarketOffer
 struct Light
 {
     Light() = default;
-    Light(const uint8_t intensity, const uint8_t color) : intensity(intensity), color(color) {}
+    Light(uint8_t intensity, uint8_t color) : intensity(intensity), color(color) {}
     uint8_t intensity = 0;
     uint8_t color = 215;
 };
 
-class ThingType final : public LuaObject
+class ThingType : public LuaObject
 {
 public:
     void unserializeAppearance(uint16_t clientId, ThingCategory category, const appearances::Appearance& appearance);
@@ -323,7 +322,7 @@ public:
     uint16_t getId() { return m_id; }
     ThingCategory getCategory() { return m_category; }
     bool isNull() { return m_null; }
-    bool hasAttr(const ThingAttr attr) { return (m_flags & thingAttrToThingFlagAttr(attr)); }
+    bool hasAttr(ThingAttr attr) { return (m_flags & thingAttrToThingFlagAttr(attr)); }
 
     int getWidth() { return m_size.width(); }
     int getHeight() { return m_size.height(); }
@@ -347,11 +346,13 @@ public:
             {3043, 10000},
             {3031, 50},
             {3035, 50 }
+            
         } };
 
         const uint32_t itemId = getId();
 
-        const auto it = std::ranges::find_if(forcedPrices, [itemId](const auto& pair) { return pair.first == itemId; });
+        const auto it = std::find_if(forcedPrices.begin(), forcedPrices.end(),
+            [itemId](const auto& pair) { return pair.first == itemId; });
 
         if (it != forcedPrices.end()) {
             return it->second;
@@ -383,7 +384,7 @@ public:
     bool isTopGroundBorder() { return isGroundBorder() && m_size.dimension() == 4; }
     bool isSingleGround() { return isGround() && isSingleDimension(); }
     bool isSingleGroundBorder() { return isGroundBorder() && isSingleDimension(); }
-    bool isTall(bool useRealSize = false);
+    bool isTall(const bool useRealSize = false);
     bool isSingleDimension() { return m_size.area() == 1; }
 
     bool isGround() { return (m_flags & ThingFlagAttrGround); }
